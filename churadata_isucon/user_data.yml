@@ -1,0 +1,4 @@
+fqdn: churadata-isucon-{i_name}
+system_info:
+  default_user:
+    name: isucon

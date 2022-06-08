@@ -1,3 +1,4 @@
+from os import path
 from aws_cdk import Stack, aws_ec2 as ec2
 from constructs import Construct
 
@@ -39,14 +40,12 @@ class ChuradataIsuconStack(Stack):
             # ("app-3", "192.168.0.13", "c5.large"),
         ]
 
+        with open(path.dirname(__file__) + "/user_data.yml", "r") as f:
+            user_data_template = f.read()
+
         for (i_name, i_addr, i_type) in instance_spec:
             user_data = ec2.UserData.for_linux(shebang="#cloud-config")
-            user_data.add_commands(
-                f"fqdn: churadata-isucon-{i_name}",
-                "system_info:",
-                "  default_user:",
-                "    name: isucon",
-            )
+            user_data.add_commands(user_data_template.format(i_name=i_name))
             ec2.Instance(
                 self,
                 id=f"ec2-{i_name}",
