@@ -8,4 +8,7 @@ runcmd:
   # SSL 証明書をインストール
   - wget -O /etc/nginx/certificates/tls-cert.pem {ssl_cert_url}/tls-cert.pem
   - wget -O /etc/nginx/certificates/tls-key.pem {ssl_cert_url}/tls-key.pem
-  # TODO: ベンチマークスクリプトをインストール
+  # ベンチマークスクリプトをインストール
+  - wget -O /home/isucon/bench.sh https://raw.githubusercontent.com/hoto17296/churadata-isucon/main/misc/bench.sh
+  - chown isucon:isucon /home/isucon/bench.sh
+  - chmod +x /home/isucon/bench.sh
