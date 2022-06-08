@@ -45,7 +45,12 @@ class ChuradataIsuconStack(Stack):
 
         for (i_name, i_addr, i_type) in instance_spec:
             user_data = ec2.UserData.for_linux(shebang="#cloud-config")
-            user_data.add_commands(user_data_template.format(i_name=i_name))
+            user_data.add_commands(
+                user_data_template.format(
+                    i_name=i_name,
+                    ssl_cert_url=self.node.try_get_context("ssl_cert_url"),
+                )
+            )
             ec2.Instance(
                 self,
                 id=f"ec2-{i_name}",
@@ -66,6 +71,3 @@ class ChuradataIsuconStack(Stack):
             )
 
         # TODO: EIP 指定
-        # TODO: /etc/hosts 追記 (or 置換)
-        # TODO: 証明書インストール
-        # TODO: ベンチマークスクリプトをインストール
