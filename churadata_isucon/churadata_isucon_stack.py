@@ -1,4 +1,3 @@
-from os import getenv
 from aws_cdk import Stack, aws_ec2 as ec2
 from constructs import Construct
 
@@ -29,7 +28,7 @@ class ChuradataIsuconStack(Stack):
             connection=ec2.Port.all_traffic(),
         )
         security_group.add_ingress_rule(
-            peer=ec2.Peer.ipv4(getenv("ALLOWED_CIDR", "0.0.0.0/0")),
+            peer=ec2.Peer.ipv4(self.node.try_get_context("allowed_cidr")),
             connection=ec2.Port.tcp(22),
         )
 
@@ -62,7 +61,7 @@ class ChuradataIsuconStack(Stack):
                         volume=ec2.BlockDeviceVolume.ebs(20, volume_type=ec2.EbsDeviceVolumeType.GP3),
                     )
                 ],
-                key_name=getenv("KEY_NAME"),
+                key_name=self.node.try_get_context("key_name"),
                 private_ip_address=i_addr,
                 user_data=user_data,
             )

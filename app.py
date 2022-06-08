@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-import os
 
-import aws_cdk as cdk
-
+from aws_cdk import App, Environment
 from churadata_isucon.churadata_isucon_stack import ChuradataIsuconStack
+from context import context
 
+app = App(context=context)
 
-app = cdk.App()
 ChuradataIsuconStack(
     app,
     "ChuradataIsuconStack",
-    env=cdk.Environment(region="ap-northeast-1"),
+    env=Environment(region="ap-northeast-1"),
 )
 
 app.synth()
