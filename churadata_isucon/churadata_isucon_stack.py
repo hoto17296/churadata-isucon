@@ -50,6 +50,8 @@ class ChuradataIsuconStack(Stack):
                     i_name=i_name,
                     display_name=self.node.try_get_context("display_name"),
                     ssl_cert_url=self.node.try_get_context("ssl_cert_url"),
+                    score_board_aws_access_key_id=self.node.try_get_context("score_board_aws_access_key_id"),
+                    score_board_aws_secret_access_key=self.node.try_get_context("score_board_aws_secret_access_key"),
                 )
             )
             ec2.Instance(
