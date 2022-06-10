@@ -35,7 +35,7 @@ class ChuradataIsuconStack(Stack):
 
         instance_spec = [
             ("bench", "192.168.0.10", "c4.xlarge"),
-            # ("app-1", "192.168.0.11", "c5.large"),
+            ("app-1", "192.168.0.11", "c5.large"),
             # ("app-2", "192.168.0.12", "c5.large"),
             # ("app-3", "192.168.0.13", "c5.large"),
         ]
@@ -48,6 +48,7 @@ class ChuradataIsuconStack(Stack):
             user_data.add_commands(
                 user_data_template.format(
                     i_name=i_name,
+                    display_name=self.node.try_get_context("display_name"),
                     ssl_cert_url=self.node.try_get_context("ssl_cert_url"),
                 )
             )
