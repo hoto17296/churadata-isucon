@@ -4,25 +4,35 @@ system_info:
   default_user:
     name: isucon
 
-runcmd:
+packages:
+  - awscli
+
+write_files:
+- path: /home/isucon/.aws/config
+  content: |
+    [profile score-board]
+    region = ap-northeast-1
+  owner: 'isucon:isucon'
+  permissions: '0600'
+- path: /home/isucon/.aws/credentials
+  content: |
+    [score-board]
+    aws_access_key_id = {score_board_aws_access_key_id}
+    aws_secret_access_key = {score_board_aws_secret_access_key}
+  owner: 'isucon:isucon'
+  permissions: '0600'
+
+bootcmd:
   # SSL 証明書をインストール
   - wget -O /etc/nginx/certificates/tls-cert.pem {ssl_cert_url}/tls-cert.pem
   - wget -O /etc/nginx/certificates/tls-key.pem {ssl_cert_url}/tls-key.pem
-  - systemctl nginx restart
   # env.sh を修正
   - sed --in-place -E 's/isucondition-([1-3])\.t\.isucon.dev/app-\1.churadata-isucon.cc/g' /home/isucon/env.sh
-  # スコアボード用の AWS 資格情報を設定
-  - apt-get install -y awscli
-  - mkdir -p /home/isucon/.aws
-  - echo -e "[profile score-board]\nregion = ap-northeast-1" > /home/isucon/.aws/config
-  - echo -e "[score-board]\naws_access_key_id = {score_board_aws_access_key_id}\naws_secret_access_key = {score_board_aws_secret_access_key}" > /home/isucon/.aws/config
-  - chown -R isucon:isucon /home/isucon/.aws
-  - chmod 600 /home/isucon/.aws/*
   # ベンチマーカーを修正
   - sed --in-place -E 's/isucondition-([1-3])\.t\.isucon.dev/app-\1.churadata-isucon.cc/g' /home/isucon/bench/main.go
-  - cd /home/isucon/bench/ && make RELEASE=1 build
+  - su -c 'cd /home/isucon/bench/ && make RELEASE=1 build' isucon
   # ベンチマークスクリプトをインストール
   - wget -O /home/isucon/bench.sh https://raw.githubusercontent.com/hoto17296/churadata-isucon/main/misc/bench.sh
+  - sed --in-place -E 's/^DISPLAY_NAME=".*"$/DISPLAY_NAME="{display_name}"/g' /home/isucon/bench.sh
   - chown isucon:isucon /home/isucon/bench.sh
   - chmod +x /home/isucon/bench.sh
-  - sed -E 's/^DISPLAY_NAME=".*"$/DISPLAY_NAME="{display_name}"/g' bench.sh
