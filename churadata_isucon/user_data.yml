@@ -26,13 +26,16 @@ bootcmd:
   # SSL 証明書をインストール
   - wget -O /etc/nginx/certificates/tls-cert.pem {ssl_cert_url}/tls-cert.pem
   - wget -O /etc/nginx/certificates/tls-key.pem {ssl_cert_url}/tls-key.pem
+
+runcmd:
   # env.sh を修正
   - sed --in-place -E 's/isucondition-([1-3])\.t\.isucon.dev/app-\1.churadata-isucon.cc/g' /home/isucon/env.sh
-  # ベンチマーカーを修正
-  - sed --in-place -E 's/isucondition-([1-3])\.t\.isucon.dev/app-\1.churadata-isucon.cc/g' /home/isucon/bench/main.go
-  - su -c 'cd /home/isucon/bench/ && make RELEASE=1 build' isucon
+  - systemctl restart isucondition.go.service
   # ベンチマークスクリプトをインストール
   - wget -O /home/isucon/bench.sh https://raw.githubusercontent.com/hoto17296/churadata-isucon/main/misc/bench.sh
   - sed --in-place -E 's/^DISPLAY_NAME=".*"$/DISPLAY_NAME="{display_name}"/g' /home/isucon/bench.sh
   - chown isucon:isucon /home/isucon/bench.sh
   - chmod +x /home/isucon/bench.sh
+  # ベンチマーカーを修正
+  - sed --in-place -E 's/isucondition-([1-3])\.t\.isucon.dev/app-\1.churadata-isucon.cc/g' /home/isucon/bench/main.go
+  - sudo -u isucon bash -c 'cd /home/isucon/bench/ && PATH=/home/isucon/local/go/bin:/home/isucon/go/bin:$PATH GOROOT=/home/isucon/local/go make RELEASE=1 build'
