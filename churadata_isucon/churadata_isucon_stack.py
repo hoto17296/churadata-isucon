@@ -36,8 +36,8 @@ class ChuradataIsuconStack(Stack):
         instance_spec = [
             ("bench", "192.168.0.10", "c4.xlarge"),
             ("app-1", "192.168.0.11", "c5.large"),
-            # ("app-2", "192.168.0.12", "c5.large"),
-            # ("app-3", "192.168.0.13", "c5.large"),
+            ("app-2", "192.168.0.12", "c5.large"),
+            ("app-3", "192.168.0.13", "c5.large"),
         ]
 
         with open(path.dirname(__file__) + "/user_data.yml", "r") as f:
